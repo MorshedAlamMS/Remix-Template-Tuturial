@@ -3,12 +3,20 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
+  redirect,
   // useLoaderData
 } from "react-router";
 
 import type { Route } from "./+types/root";
 
 import appStylesHref from "./app.css?url";
+import { createEmptyContact } from "./data";
+
+// create a contact action function
+export const action = async () => {
+  const createContact = await createEmptyContact()
+  return redirect(`/contacts/${createContact.id}/edit`)
+}
 
 export default function App() {
   return <Outlet />
