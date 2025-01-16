@@ -1,6 +1,7 @@
-import { Form, Link, NavLink, Outlet, useNavigation } from "react-router";
+import { Form, Link, NavLink, Outlet, useNavigation, useSubmit } from "react-router";
 import { getContacts } from "../data";
 import type { Route } from "../layouts/+types/sidebar";
+import { useEffect } from "react";
 
 
 
@@ -8,13 +9,22 @@ export async function loader({ request }: Route.LoaderArgs) {
     const url = new URL(request.url);
     const searchQuery = url.searchParams.get("search-query");
     const contacts = await getContacts(searchQuery);
-    return { contacts };
+    return { contacts, searchQuery };
 }
 
 export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
 
-    const { contacts } = loaderData
+    const { contacts, searchQuery } = loaderData
     const navigation = useNavigation();
+    const searchFormSubmit = useSubmit();
+
+    // back button click korle ager search form er value clear hobe
+    useEffect(() => {
+        const searchField = document.getElementById("search-query") as HTMLInputElement;
+        if (searchField) {
+            searchField.value = searchQuery ?? "";
+        }
+    }, [searchQuery]);
     return (
         <>
             <div id="sidebar">
@@ -22,13 +32,16 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
                     <Link to="about">React Router Contacts</Link>
                 </h1>
                 <div>
-                    <Form id="search-form" role="search">
+                    <Form id="search-form" role="search"
+                        onChange={(event) => searchFormSubmit(event.currentTarget)}>
                         <input
                             aria-label="Search contacts"
+                            defaultValue={searchQuery ?? ""}
                             id="search-query"
                             name="search-query"
                             placeholder="Search"
                             type="search"
+
                         />
                         <div
                             aria-hidden
