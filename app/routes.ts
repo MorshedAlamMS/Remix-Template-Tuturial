@@ -6,6 +6,7 @@ export default [
         index("routes/home.tsx"),
         route("contacts/:contactId", "routes/contact.tsx"),
         route("contacts/:contactId/edit", "routes/contact-edit.tsx"),
+        route("contacts/:contactId/destroy", "routes/contact-destroy.tsx"),
     ]),
 
     route("about", "routes/about.tsx"),

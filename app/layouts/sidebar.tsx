@@ -1,17 +1,17 @@
-import { Form, Link, NavLink, Outlet, useNavigation, type NavLinkRenderProps } from "react-router";
+import { Form, Link, NavLink, Outlet, useNavigation } from "react-router";
 import { getContacts } from "../data";
 import type { Route } from "../layouts/+types/sidebar";
 
 
 
-export async function loader() {
-    const contacts = await getContacts();
+export async function loader({ request }: Route.LoaderArgs) {
+    const url = new URL(request.url);
+    const searchQuery = url.searchParams.get("search-query");
+    const contacts = await getContacts(searchQuery);
     return { contacts };
 }
 
-export default function SidebarLayout({
-    loaderData,
-}: Route.ComponentProps) {
+export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
 
     const { contacts } = loaderData
     const navigation = useNavigation();
@@ -25,8 +25,8 @@ export default function SidebarLayout({
                     <Form id="search-form" role="search">
                         <input
                             aria-label="Search contacts"
-                            id="q"
-                            name="q"
+                            id="search-query"
+                            name="search-query"
                             placeholder="Search"
                             type="search"
                         />
