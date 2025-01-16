@@ -12,6 +12,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     return { contacts, searchQuery };
 }
 
+// UI component code goes here
 export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
 
     const { contacts, searchQuery } = loaderData
@@ -20,7 +21,7 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has("search-query");
 
-    // back button click korle ager search form er value clear hobe
+    // when click on browser back button or forward button it will not lost the search query
     useEffect(() => {
         const searchField = document.getElementById("search-query") as HTMLInputElement;
         if (searchField) {
