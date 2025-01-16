@@ -18,6 +18,8 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
     const navigation = useNavigation();
     const searchFormSubmit = useSubmit();
 
+    const searching = navigation.location && new URLSearchParams(navigation.location.search).has("search-query");
+
     // back button click korle ager search form er value clear hobe
     useEffect(() => {
         const searchField = document.getElementById("search-query") as HTMLInputElement;
@@ -33,9 +35,13 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
                 </h1>
                 <div>
                     <Form id="search-form" role="search"
-                        onChange={(event) => searchFormSubmit(event.currentTarget)}>
+                        onChange={(event) => {
+                            const isFirstSearch = searchQuery === null;
+                            searchFormSubmit(event.currentTarget, { replace: !isFirstSearch });
+                        }}>
                         <input
                             aria-label="Search contacts"
+                            className={searching ? "loading" : ""}
                             defaultValue={searchQuery ?? ""}
                             id="search-query"
                             name="search-query"
@@ -45,7 +51,7 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
                         />
                         <div
                             aria-hidden
-                            hidden={true}
+                            hidden={!searching}
                             id="search-spinner"
                         />
                     </Form>
